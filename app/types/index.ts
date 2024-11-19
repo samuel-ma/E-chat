@@ -1,6 +1,6 @@
 export interface Product {
     id: number;  // ID as a number
-    name: string;
+    title: string;
     description: string;
     price: number;
     image: string;
@@ -8,7 +8,7 @@ export interface Product {
   
   export interface CartItem {
     id: number;         // Change 'string' to 'number'
-    name: string;
+    title: string;
     price: number;
     description: string;
     image: string;

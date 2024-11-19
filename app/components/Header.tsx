@@ -23,9 +23,6 @@ const Header: React.FC = () => {
         <nav>
           <ul className="flex space-x-6">
             <li>
-              <Link href="/" className="text-white hover:underline">Home</Link>
-            </li>
-            <li>
               <Link href="/products" className="text-white hover:underline">Products</Link>
             </li>
             <li>

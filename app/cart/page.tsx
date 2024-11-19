@@ -35,10 +35,10 @@ export default function CartPage() {
                   {/* Small Image */}
                   <img
                     src={item.image}
-                    alt={item.name}
+                    alt={item.title}
                     className="w-16 h-16 object-cover rounded-md"
                   />
-                  <span className="text-lg">{item.name}</span>
+                  <span className="text-lg">{item.title}</span>
                 </td>
                 <td className="py-4 px-6 text-lg">${item.price}</td>
                 <td className="py-4 px-6">

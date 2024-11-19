@@ -25,6 +25,7 @@ export default function HomePage() {
         while (allProducts.length < totalItemsRequired) {
           const response = await axios.get<Product[]>('https://fakestoreapi.com/products');
           allProducts = [...allProducts, ...response.data];
+          console.log(allProducts);
         }
         setProducts(allProducts);
         setVisibleProducts(allProducts.slice(0, itemsPerPage));  // Show first 12 items initially

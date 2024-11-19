@@ -72,7 +72,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }
 
   // Ensure alt text is passed and is valid
-  const altText = product.name || 'Product image';
+  const altText = product.title || 'Product image';
 
   return (
     <div className="container mx-auto p-6">
@@ -87,7 +87,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           />
         </div>
         <div className="w-full md:w-1/2 mt-4 md:mt-0 md:ml-6">
-          <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+          <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
           <p className="text-lg text-gray-600 mb-6">{product.description}</p>
           <p className="text-2xl font-semibold text-gray-900 mb-4">${product.price}</p>
           <button
@@ -108,12 +108,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <div key={recommendedProduct.id} className="bg-white shadow-md rounded-lg p-6">
                 <Image
                   src={recommendedProduct.image}
-                  alt={recommendedProduct.name || 'Recommended product image'}
+                  alt={recommendedProduct.title || 'Recommended product image'}
                   width={300}
                   height={300}
                   className="rounded-md mb-4"
                 />
-                <h3 className="text-xl font-semibold mb-2">{recommendedProduct.name}</h3>
+                <h3 className="text-xl font-semibold mb-2">{recommendedProduct.title}</h3>
                 <p className="text-lg text-gray-600 mb-2">{recommendedProduct.description}</p>
                 <p className="text-xl font-semibold text-gray-900">${recommendedProduct.price}</p>
                 <button

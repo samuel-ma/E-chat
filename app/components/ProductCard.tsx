@@ -14,6 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToWishlist, removeFromWishlist, wishlistItems } = useWishlist(); // Get the function to add/remove items from the wishlist
   const { addToCart } = useCart(); // Get the function to add items to the cart
   const [isInWishlist, setIsInWishlist] = useState(false); // Track whether the product is in the wishlist
+  const [isAddedToCart, setIsAddedToCart] = useState(false); // Track whether the product has been added to the cart
 
   // Check if the product is already in the wishlist
   useEffect(() => {
@@ -36,15 +37,21 @@ export default function ProductCard({ product }: ProductCardProps) {
     ? product.description.slice(0, 100) + '...'
     : product.description;
 
+  // Truncate title to 20 characters
+  const truncatedTitle = product.title.length > 20
+    ? product.title.slice(0, 20) + '...'
+    : product.title;
+
   // Handle adding to cart
   const handleAddToCart = () => {
     addToCart({
       id: product.id,
-      name: product.name,
+      title: product.title,
       price: product.price,
       description: product.description,
       image: product.image, // This should now work since image is in the CartItem type
     });
+    setIsAddedToCart(true); // Set the state to indicate the product was added to the cart
   };
 
   return (
@@ -64,15 +71,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="relative w-full h-64 overflow-hidden mb-4 cursor-pointer">
           <img
             src={product.image}
-            alt={product.name}
+            alt={product.title}
             className="w-full h-full object-cover object-top rounded-md transform transition-transform duration-300 ease-in-out hover:scale-110"
           />
         </div>
       </Link>
-      {/* Product Name - Clicking also navigates */}
+      {/* Truncated Product Name - Clicking also navigates */}
       <Link href={`/product/${product.id}`} passHref>
         <h3 className="text-xl font-semibold text-gray-900 mb-2 w-full text-center cursor-pointer">
-          {product.name}
+          {truncatedTitle}
         </h3>
       </Link>
       {/* Truncated Description - Clicking also navigates */}
@@ -95,9 +102,9 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="mt-auto">
         <button
           onClick={handleAddToCart}
-          className="inline-block py-2 w-full bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 transition duration-200"
+          className={`inline-block py-2 w-full rounded-lg text-center transition duration-200 ${isAddedToCart ? 'bg-green-500' : 'bg-blue-600'} text-white hover:${isAddedToCart ? 'bg-green-600' : 'bg-blue-700'}`}
         >
-          Add to Cart
+          {isAddedToCart ? 'Added to Cart' : 'Add to Cart'}
         </button>
       </div>
     </div>
