@@ -18,3 +18,49 @@ body {
   background: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Adding a faster spin animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  /* Custom Spin Animation */
+@keyframes spin-fast {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .animate-spin-fast {
+    animation: spin-fast 2s ease-in-out infinite, pulse 1.5s ease-in-out infinite;
+  }
+  
+  /* Additional pulsing effect to give character */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Spinner style */
+  .spinner {
+    width: 64px;
+    height: 64px;
+    border: 6px solid transparent;
+    border-top-color: #6B46C1; /* Gradient color */
+    border-radius: 50%;
+    animation: spin-fast 2s linear infinite, pulse 1.5s ease-in-out infinite;
+  }

@@ -1,66 +1,89 @@
-'use client'
+"use client";
 
 import { useState, useEffect } from 'react';
+import { TbHeart, TbShoppingCart } from 'react-icons/tb';
 import Image from 'next/image';
 import { Product } from '../../types';
+import ProductCard from '../../components/ProductCard';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const [product, setProduct] = useState<Product | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [id, setId] = useState<string | null>(null);
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [id, setId] = useState<string | null>(null);
 
-  // Unwrap params with React.use() to get the id
+  const [wishlist, setWishlist] = useState<number[]>([]); // Track wishlist
+  const [cart, setCart] = useState<number[]>([]); // Track cart
+
   useEffect(() => {
     const unwrapParams = async () => {
       const resolvedParams = await params;
-      setId(resolvedParams.id); // Access id after unwrapping
+      setId(resolvedParams.id);
     };
-
     unwrapParams();
   }, [params]);
 
-  // Fetch product details and recommendations
   useEffect(() => {
     if (id) {
       async function fetchProduct() {
         try {
           const res = await fetch(`https://fakestoreapi.com/products/${id}`);
           if (!res.ok) {
-            if (res.status === 404) {
-              throw new Error('Product not found. It may have been removed.');
-            } else {
-              throw new Error('An unexpected error occurred while fetching product details.');
-            }
+            throw new Error('Product not found.');
           }
           const productData = await res.json();
           setProduct(productData);
 
-          // Fetch similar products based on category
-          const similarProductsRes = await fetch(`https://fakestoreapi.com/products/category/${productData.category}`);
+          const similarProductsRes = await fetch(
+            `https://fakestoreapi.com/products/category/${productData.category}`
+          );
           const similarProductsData = await similarProductsRes.json();
-          setRecommendedProducts(similarProductsData.slice(0, 4)); // Only show 4 items
+          setRecommendedProducts(
+            similarProductsData.filter((item: Product) => item.id !== Number(id)).slice(0, 4)
+          );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           setError(error.message);
+        } finally {
+          setLoading(false);
         }
       }
-
       fetchProduct();
     }
   }, [id]);
 
+  const toggleWishlist = (id: number) => {
+    setWishlist((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleCart = (id: number) => {
+    setCart((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600"></div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
-      <div className="container mx-auto p-6 text-center">
-        <div className="bg-red-100 text-red-800 p-6 rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold mb-4">Error Loading Product</h1>
-          <p className="text-lg mb-6">{error}</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
+          <p className="text-gray-700 mb-6">{error}</p>
           <button
             onClick={() => history.back()}
-            className="py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-200"
+            className="py-3 px-6 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
           >
-            Back to Products
+            Go Back
           </button>
         </div>
       </div>
@@ -68,65 +91,75 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }
 
   if (!product) {
-    return <div>Loading...</div>; // You can show a loading spinner here
+    return <div className="text-center py-6 text-gray-600">No product found.</div>;
   }
 
-  // Ensure alt text is passed and is valid
-  const altText = product.title || 'Product image';
-
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-white shadow-md rounded-lg p-6 flex flex-col md:flex-row">
-        <div className="w-full md:w-1/2">
-          <Image
-            src={product.image}
-            alt={altText} // Ensure alt text is passed here
-            width={500}
-            height={500}
-            className="rounded-md"
-          />
-        </div>
-        <div className="w-full md:w-1/2 mt-4 md:mt-0 md:ml-6">
-          <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-          <p className="text-lg text-gray-600 mb-6">{product.description}</p>
-          <p className="text-2xl font-semibold text-gray-900 mb-4">${product.price}</p>
-          <button
-            onClick={() => history.back()}
-            className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
-          >
-            Back to Products
-          </button>
+    <div className="bg-gray-50 min-h-screen">
+      {/* Hero Section */}
+      <div className="container mx-auto py-8">
+        <div className="mt-16 grid grid-cols-1 border md:grid-cols-2 gap-6 bg-white rounded-lg p-4">
+          <div>
+            <Image
+              src={product.image}
+              alt={product.title || 'Product image'}
+              width={360}
+              height={360}
+              className="rounded-lg border"
+            />
+          </div>
+          <div className="flex flex-col justify-center">
+            <h1 className="text-3xl font-bold my-4 pb-4 border-b">{product.title}</h1>
+            <p className="text-gray-600 text-sm leading-8 mb-6">{product.description}</p>
+            <p className="text-2xl text-center font-semibold text-green-600 mb-6">${product.price}</p>
+
+            {/* Wishlist and Cart buttons */}
+            <div className="flex gap-4 justify-center mb-6">
+              <button
+                onClick={() => toggleWishlist(product.id)}
+                className={`flex items-center gap-2 px-6 py-2 text-sm rounded-lg border ${
+                  wishlist.includes(product.id) ? 'bg-red-500 text-white' : 'bg-white text-gray-700 border-gray-300'
+                }`}
+              >
+                <TbHeart
+                  className={`text-xl ${
+                    wishlist.includes(product.id) ? 'text-white' : 'text-gray-700'
+                  }`}
+                />
+                {wishlist.includes(product.id) ? 'Added to Wishlist' : 'Add to Wishlist'}
+              </button>
+              <button
+                onClick={() => toggleCart(product.id)}
+                className={`flex items-center gap-2 px-6 py-2 text-sm rounded-lg border ${
+                  cart.includes(product.id) ? 'bg-black text-white' : 'bg-white text-gray-700 border-gray-300'
+                }`}
+              >
+                <TbShoppingCart
+                  className={`text-xl ${
+                    cart.includes(product.id) ? 'text-white' : 'text-gray-700'
+                  }`}
+                />
+                {cart.includes(product.id) ? 'Added to Cart' : 'Add to Cart'}
+              </button>
+            </div>
+
+            <button
+              onClick={() => history.back()}
+              className="py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md transition"
+            >
+              Back to Products
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Recommendation Section */}
-      <div className="mt-12">
-        <h2 className="text-3xl font-bold mb-6">Recommended Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {recommendedProducts.length > 0 ? (
-            recommendedProducts.map((recommendedProduct) => (
-              <div key={recommendedProduct.id} className="bg-white shadow-md rounded-lg p-6">
-                <Image
-                  src={recommendedProduct.image}
-                  alt={recommendedProduct.title || 'Recommended product image'}
-                  width={300}
-                  height={300}
-                  className="rounded-md mb-4"
-                />
-                <h3 className="text-xl font-semibold mb-2">{recommendedProduct.title}</h3>
-                <p className="text-lg text-gray-600 mb-2">{recommendedProduct.description}</p>
-                <p className="text-xl font-semibold text-gray-900">${recommendedProduct.price}</p>
-                <button
-                  onClick={() => window.location.href = `/products/${recommendedProduct.id}`}
-                  className="mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
-                >
-                  View Product
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No recommendations available.</p>
-          )}
+      {/* Recommended Products */}
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Recommended Products</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {recommendedProducts.map((item) => (
+            <ProductCard key={item.id} product={item} />
+          ))}
         </div>
       </div>
     </div>
