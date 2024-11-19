@@ -85,7 +85,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Truncated Description - Clicking also navigates */}
       <Link href={`/product/${product.id}`} passHref>
         <div className="flex justify-center items-center h-24">
-          <p className="text-gray-600 text-sm mb-4 flex-1 cursor-pointer text-center">
+          <p className="text-gray-600 text-sm flex-1 cursor-pointer text-center">
             {truncatedDescription}
           </p>
         </div>
