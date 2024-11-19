@@ -57,7 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="bg-transparent rounded-lg p-4 flex flex-col h-full border text-center">
       <div className="flex items-center justify-between pb-2">
-        <div className="px-4 rounded-md text-sm text-white bg-green-500">New</div>
+        <div className="px-4 p-1 rounded-md text-sm text-white bg-green-500">New</div>
         <div
           className="text-[20px] cursor-pointer"
           onClick={handleToggleWishlist}
