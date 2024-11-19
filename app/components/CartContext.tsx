@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 // CartContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { CartItem } from '../types';
+import { CartItem } from '../types'; // Ensure CartItem type is correctly imported
 
 // Define the context type
 interface CartContextType {
@@ -18,13 +18,23 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+  // Function to remove an item from the cart by its ID
   const removeFromCart = (id: number) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
+  // Function to add an item to the cart
   const addToCart = (item: CartItem) => {
-    setCartItems((prevItems) => [...prevItems, item]);
+    setCartItems((prevItems) => {
+      // Check if the item is already in the cart
+      const existingItem = prevItems.find((cartItem) => cartItem.id === item.id);
+      if (existingItem) {
+        return prevItems; // If already in cart, return without adding again
+      }
+      return [...prevItems, item]; // Add new item to the cart
+    });
   };
+
   return (
     <CartContext.Provider value={{ cartItems, removeFromCart, addToCart }}>
       {children}

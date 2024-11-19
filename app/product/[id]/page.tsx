@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { TbHeart, TbShoppingCart } from 'react-icons/tb';
 import Image from 'next/image';
 import { Product } from '../../types';
+import { useCart } from '../../components/CartContext'; // Import Cart context
+import { useWishlist } from '../../components/WishContext'; // Import Wishlist context
 import ProductCard from '../../components/ProductCard';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -13,8 +15,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState<boolean>(true);
   const [id, setId] = useState<string | null>(null);
 
-  const [wishlist, setWishlist] = useState<number[]>([]); // Track wishlist
-  const [cart, setCart] = useState<number[]>([]); // Track cart
+  const { addToCart, cartItems } = useCart(); // Access cart context
+  const { addToWishlist, wishlistItems } = useWishlist(); // Access wishlist context
 
   useEffect(() => {
     const unwrapParams = async () => {
@@ -53,16 +55,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     }
   }, [id]);
 
-  const toggleWishlist = (id: number) => {
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const isProductInCart = cartItems.some(item => item.id === product?.id);
+  const isProductInWishlist = wishlistItems.some(item => item.id === product?.id);
+
+  const handleAddToWishlist = (product: Product) => {
+    if (!isProductInWishlist) {
+      addToWishlist(product);
+    }
   };
 
-  const toggleCart = (id: number) => {
-    setCart((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const handleAddToCart = (product: Product) => {
+    if (!isProductInCart) {
+      addToCart(product);
+    }
   };
 
   if (loading) {
@@ -116,30 +121,26 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             {/* Wishlist and Cart buttons */}
             <div className="flex gap-4 justify-center mb-6">
               <button
-                onClick={() => toggleWishlist(product.id)}
+                onClick={() => handleAddToWishlist(product)}
                 className={`flex items-center gap-2 px-6 py-2 text-sm rounded-lg border ${
-                  wishlist.includes(product.id) ? 'bg-red-500 text-white' : 'bg-white text-gray-700 border-gray-300'
+                  isProductInWishlist ? 'bg-red-500 text-white' : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >
                 <TbHeart
-                  className={`text-xl ${
-                    wishlist.includes(product.id) ? 'text-white' : 'text-gray-700'
-                  }`}
+                  className={`text-xl ${isProductInWishlist ? 'text-white' : 'text-gray-700'}`}
                 />
-                {wishlist.includes(product.id) ? 'Added to Wishlist' : 'Add to Wishlist'}
+                {isProductInWishlist ? 'Added to Wishlist' : 'Add to Wishlist'}
               </button>
               <button
-                onClick={() => toggleCart(product.id)}
+                onClick={() => handleAddToCart(product)}
                 className={`flex items-center gap-2 px-6 py-2 text-sm rounded-lg border ${
-                  cart.includes(product.id) ? 'bg-black text-white' : 'bg-white text-gray-700 border-gray-300'
+                  isProductInCart ? 'bg-black text-white' : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >
                 <TbShoppingCart
-                  className={`text-xl ${
-                    cart.includes(product.id) ? 'text-white' : 'text-gray-700'
-                  }`}
+                  className={`text-xl ${isProductInCart ? 'text-white' : 'text-gray-700'}`}
                 />
-                {cart.includes(product.id) ? 'Added to Cart' : 'Add to Cart'}
+                {isProductInCart ? 'Added to Cart' : 'Add to Cart'}
               </button>
             </div>
 

@@ -18,12 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={GeistSans.className}>
+      <body className={`${GeistSans.className} min-h-screen flex flex-col`}>
         {/* Wrap with both CartProvider and WishlistProvider */}
         <CartProvider>
           <WishlistProvider>
             <Header />
-            <main>{children}</main>
+            <main className="flex-grow">{children}</main>
             <Footer />
           </WishlistProvider>
         </CartProvider>

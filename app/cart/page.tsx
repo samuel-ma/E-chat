@@ -1,8 +1,10 @@
 "use client";
 
+import Image from 'next/image';
 import { useCart } from '../components/CartContext'; // Correct import
 import Link from 'next/link'; // Correct import for Next.js Link
 import { CartItem } from '../types'; // Import CartItem type
+import Cart from "../../public/empty-cart.svg";
 
 export default function CartPage() {
   // Get the cart items and the removeFromCart function from context
@@ -10,14 +12,20 @@ export default function CartPage() {
 
   // If there are no items in the cart
   if (cartItems.length === 0) {
-    return <div className="text-center text-lg mt-8">Your cart is empty.</div>;
+    return <div className='flex items-center flex-col justify-center container mx-auto text-center pt-20'>
+        <Image 
+            src={Cart}
+            alt="emptycart"
+            width={400}
+            height={400}
+            className='object-center object-contain'
+        />
+        <div className="text-lg">Your cart is empty :(</div>
+    </div>
   }
 
   return (
-    <div className="container mx-auto p-6">
-      {/* Page Title */}
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">Your Shopping Cart</h1>
-      
+    <div className="container mx-auto p-4">
       {/* Cart Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow-md">
         <table className="min-w-full table-auto text-left text-gray-700">
@@ -28,6 +36,7 @@ export default function CartPage() {
               <th className="py-4 px-6 text-lg font-semibold">Action</th>
             </tr>
           </thead>
+
           <tbody>
             {cartItems.map((item: CartItem) => (
               <tr key={item.id} className="border-b border-gray-200">

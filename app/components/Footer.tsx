@@ -1,11 +1,11 @@
 "use client";
 
 import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'; // You can install react-icons for social media icons
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-blue-800 text-white py-8 mt-12">
+    <footer className="bg-blue-800 text-white py-8 mt-12 bottom-0 right-0 left-0 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Section - Logo and Links */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
