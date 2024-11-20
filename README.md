@@ -1,3 +1,11 @@
+## Ecommerce Application.
+
+This is my first attempt on creating an Ecommerce application.
+
+## FINAL LOOK
+
+![ecom](https://github.com/user-attachments/assets/114a3d88-a10e-4352-bd62-969cff2c6162)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
