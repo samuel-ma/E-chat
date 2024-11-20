@@ -18,7 +18,7 @@ const WishlistPage = () => {
     <div className="container mx-auto p-4">
       {wishlistItems.length === 0 ? (
         <div>
-          <div className="flex items-center justify-center mt-10">
+          <div className="flex items-center justify-center mt-20">
             <Image 
               src={Surprise}
               alt="emptycart"

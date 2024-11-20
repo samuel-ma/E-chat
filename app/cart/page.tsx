@@ -12,7 +12,7 @@ export default function CartPage() {
 
   // If there are no items in the cart
   if (cartItems.length === 0) {
-    return <div className='flex items-center flex-col justify-center container mx-auto text-center pt-20'>
+    return <div className='flex items-center flex-col justify-center container mx-auto text-center mt-20'>
         <Image 
             src={Cart}
             alt="emptycart"
@@ -25,7 +25,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 mt-16">
       {/* Cart Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow-md">
         <table className="min-w-full table-auto text-left text-gray-700">
